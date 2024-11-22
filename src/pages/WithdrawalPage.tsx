@@ -67,13 +67,13 @@ const WithdrawalPage = () => {
           <TbArrowBackUp size={40} className="text-accent" />
         </button>
         {steps === "two" && (
-          <>
+          <div>
             <p>Amount</p>
 
             <button onClick={() => navigate("/")}>
               <IoMdClose size={40} className="text-accent" />
             </button>
-          </>
+          </div>
         )}
       </div>
       <GlossyCard className="border border-accent/45 min-h-[20rem]">

@@ -8,6 +8,8 @@ import AuthLayout from "./AuthLayout";
 import ConfigurationPage from "../pages/ConfigurationPage";
 import NewWalletPage from "../pages/NewWalletPage";
 import ExistingWalletPage from "../pages/ExistingWalletPage";
+import DepositPage from "../pages/DepositPage";
+import SuccessPage from "../pages/SuccessPage";
 
 // import Loader from "@components/Loader.jsx";
 
@@ -23,6 +25,8 @@ const Routing = () => {
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="withdraw" element={<WithdrawalPage />} />
+        <Route path="success" element={<SuccessPage />} />
+        <Route path="deposit" element={<DepositPage />} />
         <Route path="settings" element={<SettingsPage />} />
 
         {/* <Route path="*" element={<ErrorPage />} /> */}
