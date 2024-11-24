@@ -71,7 +71,7 @@ const HomePage = () => {
           </div>
         </div>
       </GlossyCard>
-      <h3 className="my-5 text-xl">Position Overview</h3>
+      <h3 className="my-5 text-xl">Assets</h3>
 
       <div className="space-y-2">
         <GlossyCard className="mt-5 !px-5 !py-7  ">

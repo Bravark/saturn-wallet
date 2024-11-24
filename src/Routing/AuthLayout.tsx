@@ -9,9 +9,9 @@ const AuthLayout = () => {
         src="/Images/Rectangle.png"
         alt="bg"
         role="presentation"
-        className="fixed inset-0 object-cover w-full h-full -top-10 -z-[100] opacity-75"
+        className="fixed inset-0 object-cover w-full h-full  -z-[100] opacity-75"
       />
-      <div className="p-5 px-8">
+      <div className="p-5 px-8 w-[26rem] mx-auto  h-[48rem] bg-[#3C3C3C3B] backdrop-blur-sm rounded-md ">
         <Outlet />
       </div>
     </>

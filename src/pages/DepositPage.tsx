@@ -5,7 +5,7 @@ import { IoMdClose } from "react-icons/io";
 const DepositPage = () => {
   const navigate = useNavigate();
   return (
-    <div className="w-full ">
+    <div className="w-full pb-24 ">
       <div className="mt-4">
         <button onClick={() => navigate("/")}>
           <IoMdClose size={30} className="text-accent" />
