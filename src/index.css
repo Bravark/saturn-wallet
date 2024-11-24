@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-black text-white mt-5 w-[25rem] max-h-[45rem];
+  @apply bg-black text-white mt-5 w-fit mx-auto;
   font-family: "Open Sans", sans-serif;
 }
 

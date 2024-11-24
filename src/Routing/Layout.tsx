@@ -12,16 +12,18 @@ const Layout = () => {
         src="/Images/Rectangle.png"
         alt="bg"
         role="presentation"
-        className="fixed inset-0 object-cover w-full h-full -top-10 -z-[100]"
+        className="fixed inset-0 object-cover w-full h-full  -z-[100]"
       />
 
-      <div className="px-5">
-        <HomeLogo />
-        <main>
-          <Outlet />
-        </main>
+      <div className=" w-[26rem] mx-auto relative ">
+        <div className="px-5">
+          <HomeLogo />
+          <main>
+            <Outlet />
+          </main>
+        </div>
+        <Navbar />
       </div>
-      <Navbar />
     </>
   );
 };

@@ -10,13 +10,13 @@ import PassPhraseCard from "../sections/PassPhraseCard";
 const SettingsPage = () => {
   const [showTabs, setShowTabs] = useState({
     google: true,
-    phrase: false,
+    phrase: true,
   });
 
   const navigate = useNavigate();
 
   return (
-    <div className="pb-20">
+    <div className="pb-28">
       <h2 className="text-center my-8 text-xl">Manage Accounts</h2>
 
       {/* SUB: Google Tab */}
@@ -60,7 +60,6 @@ const SettingsPage = () => {
         <div className="flex flex-col gap-2 mt-4">
           <div className="mb-2 space-y-2">
             <PassPhraseCard />
-            <PassPhraseCard />
           </div>
           <Button variant="primary" className="py-5 font-semibold">
             Add Wallet
@@ -68,13 +67,22 @@ const SettingsPage = () => {
         </div>
       )}
 
-      <Button
-        variant="secondary"
-        className="block w-full mt-16 py-4"
-        onClick={() => navigate("/")}
-      >
-        Close
-      </Button>
+      <div className="space-y-4">
+        <Button
+          variant="secondary"
+          className="block w-full mt-16 py-4 text-lg"
+          onClick={() => navigate("/")}
+        >
+          Close
+        </Button>
+        <Button
+          variant="secondary"
+          className="block w-full py-4 text-lg"
+          onClick={() => navigate("/")}
+        >
+          Log out
+        </Button>
+      </div>
     </div>
   );
 };

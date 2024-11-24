@@ -31,24 +31,6 @@ const Routing = () => {
 
         {/* <Route path="*" element={<ErrorPage />} /> */}
       </Route>
-
-      {/*SUB: ====== PROTECTED ROUTES ======= */}
-      {/* <Route element={<ProtectedRoutes accessBy="authenticated" />}>
-          <Route element={<Layout />}>
-            <Route path="cart" element={<Cart />} />
-            <Route path="checkout" element={<CheckoutPage />}>
-              <Route index element={<CheckoutInfo />} />
-              <Route path="order confirmation" element={<OrderConfirm />} />
-            </Route>
-            <Route path="payment confirmation page" element={<Payment />} />
-            <Route path="features" element={<FeaturesPage />} />
-            <Route path="about" element={<About />} />
-            <Route path="account" element={<AccountsPage />}>
-              <Route index element={<AccountProfile />} />
-              <Route path="security" element={<AccountSecurity />} />
-            </Route>
-          </Route>
-        </Route> */}
     </Routes>
   );
 };
