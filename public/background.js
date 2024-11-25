@@ -91,8 +91,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     console.log("Fetching data");
     loginWithGoogle();
   }
-  if (message.type === "recoveryPhrase") {
-    const seed = MasterSmartWalletClass.GenerateNewSeed();
-  }
+
   return true; // Keep the message channel open for async responses
 });

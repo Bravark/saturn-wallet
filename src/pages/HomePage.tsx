@@ -4,9 +4,8 @@ import { SlRefresh } from "react-icons/sl";
 import { IoCopySharp, IoWalletOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/UI/Button";
-import { useCallback, useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import { seed } from "../services";
+import { useCallback, useEffect, useState } from "react";
 
 const HomePage = () => {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -59,14 +58,14 @@ const HomePage = () => {
 
   // HDR: Main JSX
   return (
-    <div className="pb-20 mt-5">
-      <GlossyCard className=" !px-4 !py-4 border border-accent/45">
+    <div className="pb-20 mt-12">
+      <GlossyCard className=" !px-4 !py-6 border border-accent/45">
         <div className="flex flex-col items-center gap-4">
           {/* SUB: Top */}
-          <div className="flex items-center justify-between self-stretch ">
+          {/* <div className="flex items-center justify-between self-stretch ">
             <p>Demitchy wallet</p>
             <p>Soon Mainnet</p>
-          </div>
+          </div> */}
 
           {/* SUB: Midlle */}
           <div className="flex items-center flex-col gap-2">

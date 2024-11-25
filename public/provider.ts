@@ -752,8 +752,6 @@ export class MasterSmartWalletClass {
   }
   static GenerateNewSeed() {
     const mnemonic = bip39.generateMnemonic();
-
-    console.log("Generating new seed", mnemonic);
     return mnemonic;
   }
   solGetKeyPairFromSeed() {
