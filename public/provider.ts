@@ -22,7 +22,8 @@ import {
 } from "@solana/web3.js";
 import bs58 from "bs58";
 import { Buffer } from "buffer";
-import * as ed25519 from "ed25519-hd-key";
+// import * as ed25519 from "ed25519-hd-key";
+import * as ed from "@noble/ed25519";
 import promiseRetry from "promise-retry";
 
 import {
@@ -30,8 +31,6 @@ import {
   getAccount,
   Account,
 } from "@solana/spl-token";
-
-require("dotenv").config();
 
 interface IAddress {
   address: string;
@@ -163,7 +162,7 @@ export class MasterSmartWalletClass {
     // If we are not getting a response back, the transaction has not confirmed.
     if (!transactionResponse) {
       console.error("Transaction not confirmed");
-      //!WE SHOULD RETRY THE TRANSACTION AGAIN HERE
+      // !WE SHOULD RETRY THE TRANSACTION AGAIN HERE
 
       throw new TransactionNotConfirmedError({});
     }
@@ -722,12 +721,11 @@ export class MasterSmartWalletClass {
     const keyPair = this.deriveChildPrivateKey(index);
     return keyPair.privateKey;
   }
-  GenerateNewSeed() {
+  static GenerateNewSeed() {
     const mnemonic = bip39.generateMnemonic();
-    const seed = bip39.mnemonicToSeedSync(mnemonic);
-    const seedString = seed.toString("hex");
-    console.log("seedString: ", seedString);
-    return seedString;
+
+    console.log("Generating new seed", mnemonic);
+    return mnemonic;
   }
   solGetKeyPairFromSeed() {
     const restoredSeedBuffer = Buffer.from(this.seed, "hex").slice(0, 32);
@@ -743,7 +741,7 @@ export class MasterSmartWalletClass {
   deriveChildKeypair(index: number) {
     const path = `m/44'/501'/0'/0'/${index}'`;
     // Derive a seed from the given path
-    const derivedSeed = ed25519.derivePath(path, this.seed).key;
+    const derivedSeed = ed.derivePath(path, this.seed).key;
     const derivedKeyPair = Keypair.fromSeed(derivedSeed);
     return derivedKeyPair;
   }

@@ -61,7 +61,7 @@ const WithdrawalPage = () => {
   }, []);
 
   return (
-    <div className="mb-20 mt-5 flex flex-col gap-5">
+    <div className="mb-20 mt-4 flex flex-col gap-5">
       <div className="flex items-center justify-between">
         <button onClick={stepsHandler}>
           <TbArrowBackUp size={40} className="text-accent" />
@@ -76,7 +76,7 @@ const WithdrawalPage = () => {
           </div>
         )}
       </div>
-      <GlossyCard className="border border-accent/45 min-h-[20rem]">
+      <GlossyCard className="border border-accent/45 min-h-[16rem]">
         {steps === "one" && (
           <div>
             {/* SUB: Input  */}
@@ -90,24 +90,24 @@ const WithdrawalPage = () => {
                 <div className="flex items-center gap-1 justify-between bg-neutral-800 rounded-md p-4 ">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <p>Wallet</p>
-                      <span className="inline-flex px-1.5 rounded-md tex-xs text-emerald-400 bg-teal-900 font-semibold">
+                      <p className="text-sm">Wallet</p>
+                      <span className="inline-flex px-1.5 rounded-md text-xs text-emerald-400 bg-teal-900 font-semibold">
                         W1
                       </span>
                     </div>
-                    <p>D1EbDs...HtCQ</p>
+                    <p className="text-sm">D1EbDs...HtCQ</p>
                   </div>
                   <FaArrowRight className="text-neutral-500" />
                 </div>
                 <div className="flex items-center gap-1 justify-between bg-neutral-800 rounded-md p-4 ">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <p>Wallet</p>
-                      <span className="inline-flex px-1.5 rounded-md tex-xs text-emerald-400 bg-teal-900 font-semibold">
+                      <p className="text-sm">Wallet</p>
+                      <span className="inline-flex px-1.5 rounded-md text-xs text-emerald-400 bg-teal-900 font-semibold">
                         W1
                       </span>
                     </div>
-                    <p>D1EbDs...HtCQ</p>
+                    <p className="text-sm">D1EbDs...HtCQ</p>
                   </div>
                   <FaArrowRight className="text-neutral-500" />
                 </div>
@@ -116,7 +116,7 @@ const WithdrawalPage = () => {
           </div>
         )}
         {steps === "two" && (
-          <div className="flex flex-col items-center gap-16 ">
+          <div className="flex flex-col items-center gap-12 ">
             <div className="flex items-center gap-1 text-neutral-400">
               <p>To:</p>
               <p>{withdrawalInfo.walletAddr}</p>
@@ -137,7 +137,7 @@ const WithdrawalPage = () => {
       )}
       <Button
         variant="primary"
-        className="flex items-center justify-center w-full  py-5 text-xl"
+        className="flex items-center justify-center w-full  py-4 text-xl"
         onClick={withDrawalHandler}
       >
         Continue

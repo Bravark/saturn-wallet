@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const WELCOMEINFO = [
   {
     title: "Keep track of your cryptocurrency",
-    text: "   Have access to your own special and secure wallet where you make all your own financial decisions",
+    text: "Have access to your own special and secure wallet where you make all your own financial decisions",
   },
   {
     title: "Conveient backup with cloud storage",
@@ -38,10 +38,7 @@ const LandingPage = () => {
         </div>
         <div className="text-center space-y-8 mt-[18rem]">
           <h2 className="text-3xl semibold">{WELCOMEINFO[steps].title}</h2>
-          <p className="text-neutral-400">
-            Have access to your own special and secure wallet where you make all
-            your own financial decisions
-          </p>
+          <p className="text-neutral-400">{WELCOMEINFO[steps].text}</p>
         </div>
         <div className="mt-16 mb-8 flex items-center justify-center gap-6">
           {WELCOMEINFO.map((_, index) => (

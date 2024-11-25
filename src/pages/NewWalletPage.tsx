@@ -4,6 +4,27 @@ import Button from "../components/UI/Button";
 import { FcGoogle } from "react-icons/fc";
 
 const NewWalletPage = () => {
+  //  const handleLogin = () => {
+  //     chrome.runtime.sendMessage({ type: "login" });
+
+  //   };
+
+  const handleLogin = () => {
+    //@ts-ignore
+    chrome.storage.sync.set({ loggedIn: true }, () => {
+      //@ts-ignore
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const currentTab = tabs[0];
+        if (currentTab) {
+          //@ts-ignore
+          chrome.tabs.update(currentTab.id!, {
+            //@ts-ignore
+            url: chrome.runtime.getURL("index.html"),
+          });
+        }
+      });
+    });
+  };
   return (
     <div>
       <div className="grid grid-cols-4 items-center ">
@@ -31,9 +52,9 @@ const NewWalletPage = () => {
           Create New Recovery Phrase
         </Button>
 
-        <p className="text-center capitalize text-sm">
+        {/* <p className="text-center capitalize text-sm">
           import existing recovery phrase
-        </p>
+        </p> */}
       </div>
 
       {/* SUB: ======== *** ========== */}
@@ -50,6 +71,7 @@ const NewWalletPage = () => {
         <Button
           variant="neutral"
           className="w-full bg-neutral-500 mt-4 flex items-center justify-center gap-2"
+          onClick={handleLogin}
         >
           <span className="p-1 inline-flex bg-white rounded-full">
             <FcGoogle size={18} />
