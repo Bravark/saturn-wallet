@@ -25,6 +25,7 @@ import { Buffer } from "buffer";
 // import * as ed25519 from "ed25519-hd-key";
 import * as ed from "@noble/ed25519";
 import promiseRetry from "promise-retry";
+import CryptoJS from "crypto-js";
 
 import {
   getAssociatedTokenAddress,
@@ -92,7 +93,8 @@ export class MasterSmartWalletClass {
     try {
       new PublicKey(address);
       return true;
-    } catch (error) {
+    } catch (e) {
+      console.log("e: ", e);
       return false;
     }
   }
@@ -101,7 +103,8 @@ export class MasterSmartWalletClass {
     try {
       new PublicKey(address);
       return true;
-    } catch (error) {
+    } catch (e) {
+      console.log("e: ", e);
       return false;
     }
   }
@@ -119,7 +122,7 @@ export class MasterSmartWalletClass {
 
     let transaction = VersionedTransaction.deserialize(deserializedBuffer);
     transaction.sign(senderKeypairs);
-    let signature;
+    let signature: any;
 
     let explorerUrl = "";
 
@@ -176,6 +179,51 @@ export class MasterSmartWalletClass {
     status = true;
     return { status, signature: transactionResponse.transaction.signatures };
   }
+  static generateSalt(): string {
+    return CryptoJS.lib.WordArray.random(16).toString(); // 128-bit salt
+  }
+
+  static deriveKey(
+    password: string,
+    salt: string,
+    iterations = 10000,
+    keySize = 256 / 32
+  ) {
+    return CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
+      keySize: keySize,
+      iterations: iterations,
+    }).toString();
+  }
+
+  static encryptSeedPhrase(seedPhrase: string, password: string) {
+    const salt = this.generateSalt(); // Generate a unique salt for this encryption
+    const key = this.deriveKey(password, salt); // Derive a key using PBKDF2
+
+    // Encrypt the seed phrase with AES using the derived key
+    const encrypted = CryptoJS.AES.encrypt(seedPhrase, key).toString();
+
+    // Return the encrypted data and the salt (needed for decryption)
+    return { encrypted, salt };
+  }
+
+  static decryptSeedPhrase(
+    encryptedSeedPhrase: string,
+    password: string,
+    salt: string
+  ) {
+    try {
+      const key = this.deriveKey(password, salt); // Derive the key using the same salt
+      const bytes = CryptoJS.AES.decrypt(encryptedSeedPhrase, key);
+      const seedPhrase = bytes.toString(CryptoJS.enc.Utf8);
+
+      // Check if decryption was successful
+      if (!seedPhrase) throw new Error("Decryption failed.");
+      return seedPhrase;
+    } catch (e) {
+      console.error("Invalid password or corrupted data:", e.message);
+      return null;
+    }
+  }
 
   async createSendConfirmRetryDeserializedTransaction(
     deserializedBuffer: Buffer,
@@ -191,7 +239,7 @@ export class MasterSmartWalletClass {
 
     let transaction = VersionedTransaction.deserialize(deserializedBuffer);
     transaction.sign(senderKeypairs);
-    let signature;
+    let signature: any;
 
     let explorerUrl = "";
 
@@ -339,7 +387,7 @@ export class MasterSmartWalletClass {
     return await this.sendTransaction(recipientAddress, amount, masterKeyPair);
   }
 
-  async getAddressWithBalance(addresses, connection: Connection) {
+  async getAddressWithBalance(addresses: IAddress[], connection: Connection) {
     const rentExemptionThreshold =
       await connection.getMinimumBalanceForRentExemption(0);
     const addressThatHasBalance: string[] = [];
@@ -455,7 +503,7 @@ export class MasterSmartWalletClass {
      */
 
     let status = false;
-    let addressThatHasBalance;
+    let addressThatHasBalance: string[] | IAddress[];
     try {
       addressThatHasBalance = await this.getAddressWithBalance(
         addresses,
@@ -479,19 +527,22 @@ export class MasterSmartWalletClass {
       );
     }
   }
-  async withdrawToSpecificAddress(addresses: IAddress[], address) {
+  async withdrawToSpecificAddress(
+    addresses: IAddress[],
+    address: PublicKeyInitData
+  ) {
     /**
      * @param addresses this is the list of All addresses that exist
      */
 
-    let addr;
+    let addr: PublicKey;
     try {
       addr = new PublicKey(address);
     } catch (error) {
       console.log("error: not a valid address ", error);
     }
     let status = false;
-    let addressThatHasBalance;
+    let addressThatHasBalance: string[] | IAddress[];
     try {
       addressThatHasBalance = await this.getAddressWithBalance(
         addresses,
@@ -527,7 +578,7 @@ export class MasterSmartWalletClass {
   ) {
     const transaction = new VersionedTransaction(messageV0);
     transaction.sign(senderKeypairs);
-    let signature;
+    let signature: string;
     let retries = 5;
     let explorerUrl = "";
 
@@ -905,7 +956,7 @@ export async function transactionSenderAndConfirmationWaiter({
 
   // in case rpc is not synced yet, we add some retries
   const response = promiseRetry(
-    async (retry) => {
+    async (retry: (arg0: null) => void) => {
       const response = await connection.getTransaction(txid, {
         commitment: "confirmed",
         maxSupportedTransactionVersion: 0,
