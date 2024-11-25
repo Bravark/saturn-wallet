@@ -23,9 +23,11 @@ import {
 import bs58 from "bs58";
 import { Buffer } from "buffer";
 // import * as ed25519 from "ed25519-hd-key";
-import * as ed from "@noble/ed25519";
+
 import promiseRetry from "promise-retry";
 import CryptoJS from "crypto-js";
+import { hmac } from "@noble/hashes/hmac";
+import { sha512 } from "@noble/hashes/sha512";
 
 import {
   getAssociatedTokenAddress,
@@ -232,14 +234,12 @@ export class MasterSmartWalletClass {
     latestBlockhash: Readonly<{
       blockhash: string;
       lastValidBlockHeight: number;
-    }>,
-    isDevnet: Boolean
+    }>
   ) {
     let status = false;
 
-    let transaction = VersionedTransaction.deserialize(deserializedBuffer);
+    const transaction = VersionedTransaction.deserialize(deserializedBuffer);
     transaction.sign(senderKeypairs);
-    let signature: any;
 
     let explorerUrl = "";
 
@@ -290,21 +290,20 @@ export class MasterSmartWalletClass {
     if (transactionResponse.meta?.err) {
       console.error(transactionResponse.meta?.err);
     }
-    transactionResponse.transaction.signatures;
 
-    explorerUrl = isDevnet
-      ? `https://explorer.solana.com/tx/${transactionResponse.transaction.signatures}?cluster=devnet`
-      : `https://solscan.io/tx/${transactionResponse.transaction.signatures}`;
+    explorerUrl = `${this.chain.explorer}/tx/${transactionResponse.transaction.signatures}`;
     console.log("View transaction on explorer:", explorerUrl);
     status = true;
-    return { signature: `${signature}`, status };
+    return {
+      signature: `${transactionResponse.transaction.signatures}`,
+      status,
+    };
   }
   async sendTransaction(
     recipientAddress: string,
     amount: number,
     senderSecretKey: Uint8Array
   ) {
-    const status = false;
     /**
      * internal method for sending sol transaction
      */
@@ -361,7 +360,7 @@ export class MasterSmartWalletClass {
       }),
     ];
 
-    let latestBlockhash = await connection.getLatestBlockhash();
+    const latestBlockhash = await connection.getLatestBlockhash();
 
     const messageV0 = new TransactionMessage({
       payerKey: senderKeypair.publicKey,
@@ -374,7 +373,6 @@ export class MasterSmartWalletClass {
       [senderKeypair],
       connection,
       latestBlockhash,
-      this.isDevnet,
       senderKeypair,
       instructions
     );
@@ -390,31 +388,28 @@ export class MasterSmartWalletClass {
   async getAddressWithBalance(addresses: IAddress[], connection: Connection) {
     const rentExemptionThreshold =
       await connection.getMinimumBalanceForRentExemption(0);
-    const addressThatHasBalance: string[] = [];
+    const addressThatHasBalance: IAddress[] = [];
     for (const address of addresses) {
       const senderBalance = await connection.getBalance(
         new PublicKey(address.address)
       );
 
       if (senderBalance > rentExemptionThreshold) {
-        addressThatHasBalance.push(address as string);
+        addressThatHasBalance.push(address);
       }
     }
     return addressThatHasBalance;
   }
 
   async sweepBatchTransaction(
-    masterKeys: {
-      privateKey: Uint8Array;
-      publicKey: string;
-    },
+    destinationAddress: string,
     sendersPrivateKeys: Uint8Array[]
   ) {
-    let connection: Connection = this.connection;
-
+    const connection: Connection = this.connection;
+    const masterKeys = this.masterKeyPair;
     let recipientPublicKey: PublicKey;
     try {
-      recipientPublicKey = new PublicKey(masterKeys.publicKey);
+      recipientPublicKey = new PublicKey(destinationAddress);
     } catch (error) {
       console.error(
         "The recipient address is not a valid public key:",
@@ -475,7 +470,7 @@ export class MasterSmartWalletClass {
       );
     }
 
-    let latestBlockhash = await connection.getLatestBlockhash();
+    const latestBlockhash = await connection.getLatestBlockhash();
 
     const masterKeypair = Keypair.fromSecretKey(masterKeys.privateKey);
     senderKeypairs.push(masterKeypair);
@@ -492,7 +487,6 @@ export class MasterSmartWalletClass {
       senderKeypairs,
       connection,
       latestBlockhash,
-      this.isDevnet,
       masterKeypair,
       initialInstructions
     );
@@ -502,22 +496,18 @@ export class MasterSmartWalletClass {
      * @param addresses this is the list of All addresses that exist
      */
 
-    let status = false;
-    let addressThatHasBalance: string[] | IAddress[];
-    try {
-      addressThatHasBalance = await this.getAddressWithBalance(
-        addresses,
-        this.connection
-      );
-      console.log("addressThatHasBalance: ", addressThatHasBalance);
-    } catch (error) {
-      console.log("error:getAddressWithBalance ", error);
-    }
+    const addressThatHasBalance = await this.getAddressWithBalance(
+      addresses,
+      this.connection
+    );
+
     try {
       const privateKeysOfAddressThatHasBalance =
-        this.solGetPrivateKeyFromAddressArray(addressThatHasBalance);
+        this.solGetPrivateKeyFromAddressArray(
+          addressThatHasBalance as IAddress[]
+        );
       this.sweepBatchTransaction(
-        this.masterKeyPair,
+        this.masterKeyPair.publicKey.toString(),
         privateKeysOfAddressThatHasBalance
       );
     } catch (error) {
@@ -527,10 +517,7 @@ export class MasterSmartWalletClass {
       );
     }
   }
-  async withdrawToSpecificAddress(
-    addresses: IAddress[],
-    address: PublicKeyInitData
-  ) {
+  async withdrawToSpecificAddress(addresses: IAddress[], address: string) {
     /**
      * @param addresses this is the list of All addresses that exist
      */
@@ -538,29 +525,21 @@ export class MasterSmartWalletClass {
     let addr: PublicKey;
     try {
       addr = new PublicKey(address);
-    } catch (error) {
-      console.log("error: not a valid address ", error);
-    }
-    let status = false;
-    let addressThatHasBalance: string[] | IAddress[];
-    try {
-      addressThatHasBalance = await this.getAddressWithBalance(
+
+      const addressThatHasBalance = await this.getAddressWithBalance(
         addresses,
         this.connection
       );
       console.log("addressThatHasBalance: ", addressThatHasBalance);
-    } catch (error) {
-      console.log("error:getAddressWithBalance ", error);
-    }
-    try {
+
       const privateKeysOfAddressThatHasBalance =
         this.solGetPrivateKeyFromAddressArray(addressThatHasBalance);
-      this.sweepBatchTransaction(addr, privateKeysOfAddressThatHasBalance);
-    } catch (error) {
-      console.log(
-        "error:solGetPrivateKeyFromAddressArray orsweepBatchTransaction  ",
-        error
+      this.sweepBatchTransaction(
+        addr.toString(),
+        privateKeysOfAddressThatHasBalance
       );
+    } catch (error) {
+      console.log("error: not a valid address ", error);
     }
   }
 
@@ -572,7 +551,7 @@ export class MasterSmartWalletClass {
       blockhash: string;
       lastValidBlockHeight: number;
     }>,
-    isDevnet: Boolean,
+
     feePayerKeypair: Keypair,
     initialInstructions: TransactionInstruction[]
   ) {
@@ -650,7 +629,6 @@ export class MasterSmartWalletClass {
       );
       throw new Error(error);
     }
-    const senderListLeyPair = [];
 
     const GAS_FEE = 5005000;
     // request a specific compute unit budget
@@ -741,7 +719,7 @@ export class MasterSmartWalletClass {
 
   //HELPERS
   solGetMultiplePublicKeyFromSeed(start: number, end: number) {
-    let pubkeys: string[] = [];
+    const pubkeys: string[] = [];
     for (let i = start; i <= end; i++) {
       const publicKey = this.solGetPublicKeyFromSeed(i);
       pubkeys.push(publicKey);
@@ -749,7 +727,7 @@ export class MasterSmartWalletClass {
     return pubkeys;
   }
   addressFromSeedMultiple(start: number, end: number) {
-    let addresses: IAddress[] = [];
+    const addresses: IAddress[] = [];
     for (let i = start; i <= end; i++) {
       const _address = this.addressFromSeed(i);
       const address = {
@@ -789,12 +767,46 @@ export class MasterSmartWalletClass {
     const publicKey = derivedKeyPair.publicKey.toBase58();
     return { privateKey, publicKey };
   }
-  deriveChildKeypair(index: number) {
+  deriveChildKeypair(index: number): Keypair {
     const path = `m/44'/501'/0'/0'/${index}'`;
-    // Derive a seed from the given path
-    const derivedSeed = ed.derivePath(path, this.seed).key;
+
+    // Derive the key for the given path
+    const derivedSeed = this.derivePath(path, Buffer.from(this.seed));
+
+    // Create a Solana keypair from the derived seed
     const derivedKeyPair = Keypair.fromSeed(derivedSeed);
     return derivedKeyPair;
+  }
+
+  private derivePath(path: string, seed: Uint8Array): Uint8Array {
+    const segments = path
+      .split("/")
+      .slice(1)
+      .map((seg) => {
+        if (!seg.endsWith("'")) {
+          throw new Error("Only hardened derivation is supported");
+        }
+        return parseInt(seg.slice(0, -1), 10) + 0x80000000;
+      });
+
+    let derived = seed;
+    for (const segment of segments) {
+      derived = this.hardenedDerivation(derived, segment);
+    }
+
+    return derived;
+  }
+
+  private hardenedDerivation(parentKey: Uint8Array, index: number): Uint8Array {
+    const indexBuffer = new Uint8Array(4);
+    new DataView(indexBuffer.buffer).setUint32(0, index, false);
+
+    const hmacResult = hmac(
+      sha512,
+      parentKey,
+      new Uint8Array([...parentKey, ...indexBuffer])
+    );
+    return hmacResult.slice(0, 32); // Take the first 32 bytes for the seed
   }
   solConvertUint8ArrayToBase58(uint8Array: Uint8Array) {
     const base58String = bs58.encode(uint8Array);
@@ -836,6 +848,7 @@ export class SoonClass extends MasterSmartWalletClass {
       console.log("tokenBalanceDecimal: ", tokenBalanceDecimal);
       return tokenBalanceDecimal;
     } catch (error) {
+      console.log("error: ", error);
       return 0;
     }
   };
