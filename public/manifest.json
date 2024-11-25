@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "De Wallet",
+  "name": "Arcane Wallet",
   "version": "1.0",
   "description": "A browser extension with React, Vite, TypeScript, Tailwind, and React Router",
   "action": {
@@ -14,5 +14,10 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["storage", "tabs", "activeTab", "clipboardWrite"]
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "clipboardWrite"
+  ]
 }
