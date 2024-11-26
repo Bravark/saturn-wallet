@@ -11,9 +11,14 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@noble/ed25519": "^2.1.0",
+    "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-inject": "^5.0.5",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@scure/bip39": "^1.5.0",
     "@solana/spl-token": "^0.4.9",
+    "@solana/web3.js": "^1.95.5",
     "bip39": "^3.1.0",
     "borsh": "^2.0.0",
     "bs58": "^6.0.0",
@@ -50,7 +55,7 @@
     "vite": "^5.4.10"
   },
   "resolutions": {
-    "borsh": "^1.0.0"
+    "borsh": "2.0.0"
   },
   "workspaces": [
     "lib"

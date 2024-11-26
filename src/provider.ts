@@ -1,5 +1,5 @@
 //@ts-nocheck
-import * as bip39 from "bip39";
+import * as bip39 from "@scure/bip39";
 
 import fs from "fs";
 import {
@@ -21,7 +21,7 @@ import {
   VersionedTransactionResponse,
   Commitment,
 } from "@solana/web3.js";
-import bs58 from "bs58";
+// import bs58 from "bs58";
 import { Buffer } from "buffer";
 // import * as ed25519 from "ed25519-hd-key";
 
@@ -807,10 +807,10 @@ class MasterSmartWalletClass {
     );
     return hmacResult.slice(0, 32); // Take the first 32 bytes for the seed
   }
-  solConvertUint8ArrayToBase58(uint8Array: Uint8Array) {
-    const base58String = bs58.encode(uint8Array);
-    return base58String;
-  }
+  // solConvertUint8ArrayToBase58(uint8Array: Uint8Array) {
+  //   const base58String = bs58.encode(uint8Array);
+  //   return base58String;
+  // }
 }
 
 export class SoonClass extends MasterSmartWalletClass {

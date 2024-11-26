@@ -42,9 +42,9 @@ const DepositPage = () => {
           />
         </div>
         <div>
-          <p className="text-xl">Your Dewallet Solana address</p>
+          <p className="text-xl">Your Archane Sooon address</p>
           <p className="text-neutral-400 text-xs w-8/12 mx-auto">
-            Receive tokens using this address as as your deposit address
+            Receive tokens using this address as your deposit address
           </p>
         </div>
       </div>
@@ -59,9 +59,6 @@ const DepositPage = () => {
           ) : (
             <IoCopySharp className="size-5" />
           )}
-        </Button>
-        <Button variant="secondary" className="block w-full py-4 ">
-          Share
         </Button>
       </div>
     </div>

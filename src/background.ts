@@ -1,6 +1,6 @@
 //@ts-nocheck
 
-import provider from "../public/provider";
+import provider from "./provider.js";
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {

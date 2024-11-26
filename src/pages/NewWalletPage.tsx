@@ -40,8 +40,15 @@ const NewWalletPage = () => {
 
   // HDR: Create a new pass phrase
   const handleCreateNewPhrase = () => {
+    console.log("running handle create");
     //@ts-ignore
     chrome.runtime.sendMessage({ type: "generateNewSeed" }, (response) => {
+      console.log("response", response);
+      //@ts-ignore
+      if (chrome.runtime.lastError) {
+        //@ts-ignore
+        console.log("Error", chrome.runtime.lastError.message);
+      }
       if (response.success) {
         setPhrases(response.data);
         console.log(response.data);
