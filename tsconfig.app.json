@@ -27,6 +27,6 @@
     "noUncheckedSideEffectImports": true
   },
 
-  "include": ["src", "public/**/*.ts"],
+  "include": ["src", "public/**/*.ts", "public/background.js"],
   "exclude": ["node_modules"]
 }

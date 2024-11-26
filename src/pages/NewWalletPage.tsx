@@ -6,6 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoIosWarning, IoMdArrowBack } from "react-icons/io";
+// import MasterSmartWalletClass from "../provider";
 
 const NewWalletPage = () => {
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -38,6 +39,10 @@ const NewWalletPage = () => {
     });
   };
 
+  // const handleLogin = () => {
+  //   const seed = MasterSmartWalletClass.GenerateNewSeed();
+  //   console.log("seed: ", seed);
+  // };
   // HDR: Create a new pass phrase
   const handleCreateNewPhrase = () => {
     console.log("running handle create");

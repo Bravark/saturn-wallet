@@ -1,5 +1,8 @@
-//@ts-nocheck
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as bip39 from "@scure/bip39";
+
+import CryptoJS from "crypto-js";
+import { wordlist } from "@scure/bip39/wordlists/english";
 
 import fs from "fs";
 import {
@@ -60,18 +63,18 @@ export interface Chain {
   isDevnet: boolean;
 }
 
-const chain: Chain = {
-  name: "SOON TESTNET",
-  symbol: "SOON",
-  chainDecimals: LAMPORTS_PER_SOL.toString(),
-  explorer: "https://explorer.testnet.soo.network",
-  http: ["https://rpc.testnet.soo.network/rpc"],
-  ws: "",
-  nativeTokenProfitSpreed: "0.04",
-  chainTokenExplorer: "https://explorer.testnet.soo.network/",
-  isEvm: false,
-  isDevnet: true,
-};
+// const chain: Chain = {
+//   name: "SOON TESTNET",
+//   symbol: "SOON",
+//   chainDecimals: LAMPORTS_PER_SOL.toString(),
+//   explorer: "https://explorer.testnet.soo.network",
+//   http: ["https://rpc.testnet.soo.network/rpc"],
+//   ws: "",
+//   nativeTokenProfitSpreed: "0.04",
+//   chainTokenExplorer: "https://explorer.testnet.soo.network/",
+//   isEvm: false,
+//   isDevnet: true,
+// };
 class MasterSmartWalletClass {
   // Define the type for the config object
   chain: Chain;
@@ -83,7 +86,7 @@ class MasterSmartWalletClass {
 
   constructor(mnemonic: string, chain: Chain) {
     const seed = bip39.mnemonicToSeedSync(mnemonic);
-    this.seed = seed.toString("hex");
+    this.seed = seed.toString();
     this.chain = chain;
     const nn = Math.floor(Math.random() * this.chain.http.length);
     console.log("this.chain.http: ", this.chain.http[nn]);
@@ -118,16 +121,14 @@ class MasterSmartWalletClass {
     latestBlockhash: Readonly<{
       blockhash: string;
       lastValidBlockHeight: number;
-    }>,
-    isDevnet: Boolean
+    }>
   ) {
     let status = false;
 
-    let transaction = VersionedTransaction.deserialize(deserializedBuffer);
+    const transaction = VersionedTransaction.deserialize(deserializedBuffer);
     transaction.sign(senderKeypairs);
-    let signature: any;
 
-    let explorerUrl = "";
+    const explorerUrl = "";
 
     console.log("sending transaction...");
 
@@ -176,7 +177,6 @@ class MasterSmartWalletClass {
     if (transactionResponse.meta?.err) {
       console.error(transactionResponse.meta?.err);
     }
-    transactionResponse.transaction.signatures;
 
     console.log("View transaction on explorer:", explorerUrl);
     status = true;
@@ -222,7 +222,7 @@ class MasterSmartWalletClass {
       // Check if decryption was successful
       if (!seedPhrase) throw new Error("Decryption failed.");
       return seedPhrase;
-    } catch (e) {
+    } catch (e: any) {
       console.error("Invalid password or corrupted data:", e.message);
       return null;
     }
@@ -313,12 +313,12 @@ class MasterSmartWalletClass {
 
     try {
       new PublicKey(recipientAddress);
-    } catch (error) {
+    } catch (error: any) {
       console.log(
         "the recipientAddress is not a valid public key",
         recipientAddress
       );
-      throw new Error(error);
+      throw new error();
     }
 
     const senderBalance = await connection.getBalance(senderKeypair.publicKey);
@@ -411,12 +411,12 @@ class MasterSmartWalletClass {
     let recipientPublicKey: PublicKey;
     try {
       recipientPublicKey = new PublicKey(destinationAddress);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(
         "The recipient address is not a valid public key:",
         masterKeys.publicKey
       );
-      throw new Error(error.message);
+      throw error;
     }
 
     const senderKeypairs: Keypair[] = [];
@@ -583,7 +583,7 @@ class MasterSmartWalletClass {
         }
         return { status: true, signature: `${signature}`, explorerUrl };
         break; // If successful, exit the loop
-      } catch (error) {
+      } catch (error: any) {
         if (error.message.includes("block height exceeded")) {
           retries -= 1;
           if (retries === 0) {
@@ -623,7 +623,7 @@ class MasterSmartWalletClass {
 
     try {
       new PublicKey(recipientAddress);
-    } catch (error) {
+    } catch (error: any) {
       console.log(
         "the recipientAddress is not a valid public key",
         recipientAddress
@@ -752,7 +752,7 @@ class MasterSmartWalletClass {
     return keyPair.privateKey;
   }
   static GenerateNewSeed() {
-    const mnemonic = bip39.generateMnemonic();
+    const mnemonic = bip39.generateMnemonic(wordlist);
     return mnemonic;
   }
   solGetKeyPairFromSeed() {
@@ -822,7 +822,7 @@ export class SoonClass extends MasterSmartWalletClass {
       const publicKey = new PublicKey(address);
       const bal = await connection.getBalance(publicKey);
       return bal;
-    } catch (error) {
+    } catch (error: any) {
       console.log("error: ", error);
       console.log("error message: ", error.message);
       throw new Error(

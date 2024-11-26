@@ -38,13 +38,13 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: "./index.html",
-        background: "./src/background.ts", // Include background script
+        provider: "./src/provider.ts", // Include provider script
       },
       output: {
         format: "es",
         entryFileNames: (chunk) => {
-          if (chunk.name === "background") {
-            return "background.js"; // Ensure `background.js` name
+          if (chunk.name === "provider") {
+            return "provider.js"; // Ensure `background.js` name
           }
           return "[name]-[hash].js"; // Default for others
         },
