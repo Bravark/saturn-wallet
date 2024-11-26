@@ -7,27 +7,27 @@ import Button from "../components/UI/Button";
 import { FaCheck } from "react-icons/fa";
 import { useCallback, useEffect, useState } from "react";
 
+const ActionButtons = [
+  {
+    label: "Deposit",
+    icon: <IoWalletOutline size={20} className="text-accent" />,
+    path: "deposit",
+  },
+  {
+    label: "Withdraw",
+    icon: <PiDownloadDuotone size={20} className="text-accent" />,
+    path: "withdraw",
+  },
+  {
+    label: "Refresh",
+    icon: <SlRefresh size={20} className="text-accent" />,
+    path: "refresh",
+  },
+];
+
 const HomePage = () => {
   const [showTooltip, setShowTooltip] = useState(false);
   const navigate = useNavigate();
-
-  const ActionButtons = [
-    {
-      label: "Deposit",
-      icon: <IoWalletOutline size={20} className="text-accent" />,
-      path: "deposit",
-    },
-    {
-      label: "Withdraw",
-      icon: <PiDownloadDuotone size={20} className="text-accent" />,
-      path: "withdraw",
-    },
-    {
-      label: "Refresh",
-      icon: <SlRefresh size={20} className="text-accent" />,
-      path: "refresh",
-    },
-  ];
 
   const actionButtonHandler = (path: string) => {
     if (path === "refresh") {
@@ -55,6 +55,18 @@ const HomePage = () => {
   }, []);
 
   // "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuQP06g/HshpBcosLVte9klud72Jmv0r8dwwY//qlCgG8XK7/wrSst3fXlkmGVzgT7AuaImE5DrvbUXG75Cz17BKVjIpdexbnak7QMK6ixqA4TR38OKhh0XcZD1VLcPrjo0TdU/uUtd/5CORingj7We3PQxDgUe7jrwcaCD5iNYBOcCE1qs5b6oQ51nO7B5harNvhQ8NmZqqWBQblG58oLQuAjj6IifLSHp+xosuA2iGspibXLVA/GaqXmztDG5lc/KKpaFNQRxldOpBjRzGU/ftmStw9RiPRrTDfbzRCywFhMutm4RsLgUEAE+oD2kE9vcKyNA1/0MldgZ8WQnq64wIDAQAB"
+
+  useEffect(() => {
+    //@ts-ignore
+    chrome.storage.sync.get("encryptedPhrase", (result) => {
+      console.log("encryptedPhrase", result.encryptedPhrase);
+      //@ts-ignore
+      if (!result.encryptedPhrase) {
+        navigate("/welcome");
+      }
+    });
+    //@ts-ignore
+  }, []);
 
   // HDR: Main JSX
   return (

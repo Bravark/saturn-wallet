@@ -1,3 +1,4 @@
+//@ts-nocheck
 import * as bip39 from "bip39";
 
 import fs from "fs";
@@ -25,7 +26,7 @@ import { Buffer } from "buffer";
 // import * as ed25519 from "ed25519-hd-key";
 
 import promiseRetry from "promise-retry";
-import CryptoJS from "crypto-js";
+// import CryptoJS from "crypto-js";
 import { hmac } from "@noble/hashes/hmac";
 import { sha512 } from "@noble/hashes/sha512";
 
@@ -71,7 +72,7 @@ const chain: Chain = {
   isEvm: false,
   isDevnet: true,
 };
-export class MasterSmartWalletClass {
+class MasterSmartWalletClass {
   // Define the type for the config object
   chain: Chain;
   connection: Connection;
@@ -1010,6 +1011,8 @@ export class TransactionNotConfirmedError extends Error {
   }
 }
 
-export const APPLICATION_ERROR = {
+const APPLICATION_ERROR = {
   TRANSACTION_NOT_CONFIRMED_ERROR: "transaction_not_confirmed",
 };
+
+export default MasterSmartWalletClass;

@@ -1,16 +1,24 @@
-import { MasterSmartWalletClass } from "./../../public/provider";
+//@ts-nocheck
 
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.get("loggedIn", ({ loggedIn }) => {
-    if (!loggedIn) {
-      chrome.tabs.create({
-        url: chrome.runtime.getURL("index.html#/landing"),
-      });
-    }
-  });
+import provider from "../public/provider";
+
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === "install") {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL("index.html#/landing"),
+    });
+  }
+  // chrome.storage.sync.get("loggedIn", ({ loggedIn }) => {
+  //   if (!loggedIn) {
+  //     chrome.tabs.create({
+  //       url: chrome.runtime.getURL("index.html#/landing"),
+  //     });
+  //   }
+  // });
 });
 
-chrome.action.onClicked.addListener(() => {
+chrome.action.onClicked.addListener((details) => {
+  console.log("Onclick listen", details);
   chrome.storage.sync.get("loggedIn", ({ loggedIn }) => {
     if (!loggedIn) {
       // Remove the default popup to handle redirection
@@ -90,6 +98,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.type === "login") {
     console.log("Fetching data");
     loginWithGoogle();
+  }
+  if (message.type === "generateNewSeed") {
+    const seed = provider.GenerateNewSeed();
+    const response = { success: true, data: seed };
+    console.log("response feom background", response);
+    sendResponse(response);
   }
 
   return true; // Keep the message channel open for async responses

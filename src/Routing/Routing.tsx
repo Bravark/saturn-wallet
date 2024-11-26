@@ -10,6 +10,7 @@ import NewWalletPage from "../pages/NewWalletPage";
 import ExistingWalletPage from "../pages/ExistingWalletPage";
 import DepositPage from "../pages/DepositPage";
 import SuccessPage from "../pages/SuccessPage";
+import WelcomePage from "../pages/WelcomePage";
 
 // import Loader from "@components/Loader.jsx";
 
@@ -21,7 +22,9 @@ const Routing = () => {
         <Route path="configure" element={<ConfigurationPage />} />
         <Route path="wallet-new" element={<NewWalletPage />} />
         <Route path="wallet-existing" element={<ExistingWalletPage />} />
+        <Route path="welcome" element={<WelcomePage />} />
       </Route>
+
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="withdraw" element={<WithdrawalPage />} />
