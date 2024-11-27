@@ -4,8 +4,9 @@ import Button from "../components/UI/Button";
 import { FcGoogle } from "react-icons/fc";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import { IoIosWarning, IoMdArrowBack } from "react-icons/io";
+import { IoIosWarning, IoMdArrowBack, IoMdCheckmark } from "react-icons/io";
 import { useExtension } from "../store/context";
+import { useNavigate } from "react-router-dom";
 
 const NewWalletPage = () => {
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -13,8 +14,9 @@ const NewWalletPage = () => {
   const [phrases, setPhrases] = useState("");
   const [showTooltip, setShowTooltip] = useState(false);
   const [steps, setSteps] = useState(0);
+  const navigate = useNavigate();
 
-  const { generateNewSeed } = useExtension();
+  const { generateNewSeed, encryptedPhrase } = useExtension();
 
   //  const handleLogin = () => {
   //     chrome.runtime.sendMessage({ type: "login" });
@@ -62,6 +64,7 @@ const NewWalletPage = () => {
     }
   }, []);
 
+  // HDR: Creating a new passphrase password
   const createPhrase = () => {
     if (
       passwordRef.current?.value === "" ||
@@ -75,7 +78,18 @@ const NewWalletPage = () => {
       return;
     }
 
-    console.log("Password created successfully");
+    const encrypt = encryptedPhrase(
+      phrases,
+      passwordRef.current?.value as string
+    );
+
+    if (encrypt.encrypted) {
+      localStorage.setItem("encryptedPhrase", JSON.stringify(encrypt));
+
+      //@ts-ignore
+      chrome.storage.sync.set({ loggedIn: JSON.stringify(encrypt) });
+      navigate("/");
+    }
   };
 
   return (
@@ -88,7 +102,7 @@ const NewWalletPage = () => {
           <h3 className="col-span-3 text-xl capitalize">Create new wallet</h3>
         </div>
       )}
-      {steps > 0 && (
+      {steps > 0 && steps < 3 && (
         <div className="grid grid-cols-4 items-center ">
           <button
             className="flex items-center gap-1"
@@ -208,6 +222,8 @@ const NewWalletPage = () => {
           </Button>
         </div>
       )}
+
+      {/* HDR: Creating a password */}
       {steps === 2 && (
         <div className="mt-6">
           <p className="text-center text-lg mb-4 text-accent">
@@ -215,7 +231,7 @@ const NewWalletPage = () => {
           </p>
           <div className="space-y-2">
             <label htmlFor="passphrase" className="text-neutral-400">
-              Password :{" "}
+              Password{" "}
             </label>
             <input
               type="text"
@@ -226,7 +242,7 @@ const NewWalletPage = () => {
           </div>
           <div className="space-y-2 mt-4">
             <label htmlFor="passphrase1" className="text-neutral-400">
-              Confirm Password :{" "}
+              Confirm Password{" "}
             </label>
             <input
               type="text"
@@ -238,6 +254,25 @@ const NewWalletPage = () => {
 
           <Button className=" w-full py-3 mt-8" onClick={createPhrase}>
             Create
+          </Button>
+        </div>
+      )}
+
+      {/* HDR: Sucessfully created password */}
+      {steps === 3 && (
+        <div className="mt-6">
+          <div className="size-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mt-[8rem] mb-8">
+            <IoMdCheckmark size={65} className="text-green-500" />
+          </div>
+          <p className="text-center text-lg mb-4">
+            Password created successfully
+          </p>
+
+          <Button
+            className=" w-full py-3 mt-8"
+            onClick={() => navigate("/welcome")}
+          >
+            Login
           </Button>
         </div>
       )}

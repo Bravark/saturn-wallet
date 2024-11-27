@@ -22,7 +22,7 @@ chrome.action.onClicked.addListener((details) => {
 
       // Open the login page in a new tab
       chrome.tabs.create({
-        url: chrome.runtime.getURL("index.html#/landing"),
+        url: chrome.runtime.getURL("index.html#/welcome"),
       });
     } else {
       // Restore the default popup for logged-in users
