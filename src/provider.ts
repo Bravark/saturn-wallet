@@ -234,7 +234,7 @@ class MasterSmartWalletClass {
     try {
       const publicKey = new PublicKey(this.masterAddress);
       const bal = await connection.getBalance(publicKey);
-      return bal;
+      return bal / LAMPORTS_PER_SOL;
     } catch (error: any) {
       console.log("error: ", error);
       console.log("error message: ", error.message);
@@ -257,8 +257,10 @@ class MasterSmartWalletClass {
       //convert tokenBalance bigInt to decimal
 
       const tokenBalanceDecimal = tokenBalance.value.uiAmount;
-      console.log("tokenBalanceDecimal: ", tokenBalanceDecimal);
-      return tokenBalanceDecimal;
+      if (tokenBalanceDecimal == null) {
+        throw new Error("could not get balance");
+      }
+      return tokenBalanceDecimal / LAMPORTS_PER_SOL;
     } catch (error) {
       console.log("error: ", error);
       return 0;

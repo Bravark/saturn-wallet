@@ -47,7 +47,7 @@ const ExistingPassphrasesPage = () => {
     e.preventDefault();
 
     //@ts-ignore
-    const values = inputRefs.current.map((ref) => ref?.value || "");
+    const values = inputRefs.current.map((ref) => ref?.value.trim() || "");
     const isEmpty = values.some((values) => values == "");
     if (isEmpty) {
       setErrors("Provide all phrases");
@@ -88,7 +88,7 @@ const ExistingPassphrasesPage = () => {
         });
       }
 
-      setSteps(3);
+      setSteps(2);
     }
   };
 

@@ -59,6 +59,7 @@ const ExtensionContextProvider = ({ children }: { children: ReactNode }) => {
 
   //    SUB: Get account
   const accountHandler = (phrase: string) => {
+    console.log("From context", phrase);
     const acc = new MasterSmartWalletClass(phrase, chain);
     setAccount(acc);
   };
