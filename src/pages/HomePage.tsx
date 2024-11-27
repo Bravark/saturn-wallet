@@ -17,7 +17,7 @@ const ActionButtons = [
     path: "deposit",
   },
   {
-    label: "Withdraw",
+    label: "Send",
     icon: <PiDownloadDuotone size={20} className="text-accent" />,
     path: "withdraw",
   },
