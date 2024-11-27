@@ -14,8 +14,8 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 chrome.action.onClicked.addListener((details) => {
-  chrome.storage.sync.get("accountCreated", ({ loggedIn }) => {
-    if (!loggedIn) {
+  chrome.storage.sync.get("accountCreated", ({ encrypted }) => {
+    if (!encrypted) {
       // Remove the default popup to handle redirection
       chrome.action.setPopup({ popup: "index.html#/welcome" });
 
@@ -93,9 +93,16 @@ function loginWithGoogle() {
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.type === "login") {
-    console.log("Fetching data");
     loginWithGoogle();
   }
+  if (message.type === "setEncryption") {
+    chrome.storage.sync.set({ accountCreated: message.encrypt });
+  }
+  if (message.type === "getEncryption") {
+    chrome.storage.sync.get(["accountCreated"]).then((encrypted) => {
+      sendResponse({ success: true, encrypted: encrypted.accountCreated });
+    });
+  }
 
-  return true; // Keep the message channel open for async responses
+  return true;
 });

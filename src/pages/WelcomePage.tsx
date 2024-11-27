@@ -16,24 +16,72 @@ const WelcomePage = () => {
       return;
     }
 
-    const data = localStorage.getItem("encryptedPhrase");
+    if (process.env.NODE_ENV !== "production") {
+      const data = localStorage.getItem("encryptedPhrase");
 
-    const encryptedPhrase: { encrypted: string; salt: string } =
-      data && JSON.parse(data);
+      const encryptedPhrase: { encrypted: string; salt: string } =
+        data && JSON.parse(data);
 
-    const decrypt = decryptedPhrase({
-      salt: encryptedPhrase.salt,
-      encrypted: encryptedPhrase.encrypted,
-      password: value,
-    });
+      const decrypt = decryptedPhrase({
+        salt: encryptedPhrase.salt,
+        encrypted: encryptedPhrase.encrypted,
+        password: value,
+      });
 
-    if (decrypt === null) {
-      setError("Invalid Password");
+      if (decrypt === null) {
+        setError("Invalid Password");
+        return;
+      }
+
+      accountHandler(decrypt);
+      navigate("/");
+
       return;
     }
+    //@ts-ignore
+    chrome.storage.sync.get(["accountCreated"]).then((encrypted) => {
+      const encryptedPhrase: { encrypted: string; salt: string } =
+        encrypted.accountCreated && JSON.parse(encrypted.accountCreated);
 
-    accountHandler(decrypt);
-    navigate("/");
+      const decrypt = decryptedPhrase({
+        salt: encryptedPhrase.salt,
+        encrypted: encryptedPhrase.encrypted,
+        password: value,
+      });
+
+      if (decrypt === null) {
+        setError("Invalid Password");
+      } else {
+        accountHandler(decrypt);
+        navigate("/");
+      }
+    });
+
+    // chrome.runtime.sendMessage("getEncryption", (response) => {
+    //   console.log("from welcome outer", response);
+    //   //@ts-ignore
+    //   if (!chrome.runtime.lastError) {
+    //     if (response?.success) {
+    //       const encryptedPhrase: { encrypted: string; salt: string } =
+    //         response.encrypted && JSON.parse(response.encrypted);
+
+    //       console.log("from welcome", encryptedPhrase);
+
+    //       const decrypt = decryptedPhrase({
+    //         salt: encryptedPhrase.salt,
+    //         encrypted: encryptedPhrase.encrypted,
+    //         password: value,
+    //       });
+
+    //       if (decrypt === null) {
+    //         setError("Invalid Password");
+    //       } else {
+    //         accountHandler(decrypt);
+    //         navigate("/");
+    //       }
+    //     }
+    //   }
+    // });
   };
 
   useEffect(() => {
@@ -69,6 +117,7 @@ const WelcomePage = () => {
             id="passphrase"
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            autoFocus
           />
         </div>
 

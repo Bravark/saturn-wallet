@@ -4,7 +4,7 @@ import { IoChevronDown } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 import { useNavigate } from "react-router-dom";
 
-import AccountGoogleCard from "../sections/AccountGoogleCard";
+// import AccountGoogleCard from "../sections/AccountGoogleCard";
 import PassPhraseCard from "../sections/PassPhraseCard";
 
 const SettingsPage = () => {
@@ -20,7 +20,7 @@ const SettingsPage = () => {
       <h2 className="text-center my-8 text-xl">Manage Accounts</h2>
 
       {/* SUB: Google Tab */}
-      <div className="flex items-center gap-3">
+      {/* <div className="flex items-center gap-3">
         <IoChevronDown
           size={25}
           className={twMerge(showTabs.google && "rotate-180", "shrink-0")}
@@ -30,13 +30,13 @@ const SettingsPage = () => {
         />
         <p className="text-xl">Google</p>
         <span className="w-full h-2 inline-block border-b-2 border-dashed border-neutral-400" />
-      </div>
+      </div> */}
       {/* SUB: Content */}
-      {showTabs.google && (
+      {/* {showTabs.google && (
         <div className="mt-4">
           <AccountGoogleCard />
         </div>
-      )}
+      )} */}
 
       {/* SUB: Phrase Tab */}
       <div className="flex items-center gap-3 mt-8">
@@ -61,9 +61,9 @@ const SettingsPage = () => {
           <div className="mb-2 space-y-2">
             <PassPhraseCard />
           </div>
-          <Button variant="primary" className="py-5 font-semibold">
+          {/* <Button variant="primary" className="py-5 font-semibold">
             Add Wallet
-          </Button>
+          </Button> */}
         </div>
       )}
 
@@ -74,13 +74,6 @@ const SettingsPage = () => {
           onClick={() => navigate("/")}
         >
           Close
-        </Button>
-        <Button
-          variant="secondary"
-          className="block w-full py-4 text-lg"
-          onClick={() => navigate("/")}
-        >
-          Log out
         </Button>
       </div>
     </div>

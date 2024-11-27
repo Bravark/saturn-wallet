@@ -90,7 +90,10 @@ const NewWalletPage = () => {
         localStorage.setItem("encryptedPhrase", JSON.stringify(encrypt));
       } else {
         //@ts-ignore
-        chrome.storage.sync.set({ accountCreated: JSON.stringify(encrypt) });
+        chrome.runtime.sendMessage({
+          type: "setEncryption",
+          encrypt: JSON.stringify(encrypt),
+        });
       }
 
       setSteps(3);

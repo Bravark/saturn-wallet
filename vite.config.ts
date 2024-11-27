@@ -1,3 +1,4 @@
+// import inject from "@rollup/plugin-inject";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
@@ -5,11 +6,9 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 export default defineConfig({
   plugins: [
     react(),
-    nodePolyfills({
-      globals: {
-        Buffer: true,
-      },
-    }),
+    // inject({
+    //   Buffer: ["buffer", "Buffer"],
+    // }),
   ],
   resolve: {
     alias: {

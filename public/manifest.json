@@ -18,5 +18,5 @@
     "client_id": "Y1054224637281-4epe4bvpic5tdv68lg133tm8pre8pmhg.apps.googleusercontent.com",
     "scopes": [""]
   },
-  "permissions": ["storage", "tabs", "activeTab", "clipboardWrite", "identity"]
+  "permissions": ["storage", "activeTab", "identity"]
 }

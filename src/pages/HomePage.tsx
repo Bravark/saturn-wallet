@@ -77,8 +77,10 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+    // if (account) {
+    // }
     getBalance();
-  }, [account]);
+  }, []);
 
   // HDR: Main JSX
   if (balance === undefined) {
