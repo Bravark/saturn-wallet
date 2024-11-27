@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as bip39 from "@scure/bip39";
+import { Buffer } from "buffer"; // Import the polyfill
+window.Buffer = Buffer; // Inject Buffer into the global scope
 
 import CryptoJS from "crypto-js";
 import { wordlist } from "@scure/bip39/wordlists/english";
@@ -24,7 +26,7 @@ import {
   Commitment,
 } from "@solana/web3.js";
 // import bs58 from "bs58";
-import { Buffer } from "buffer";
+// import { Buffer } from "buffer";
 // import * as ed25519 from "ed25519-hd-key";
 
 import promiseRetry from "promise-retry";
