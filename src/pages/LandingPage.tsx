@@ -36,7 +36,7 @@ const LandingPage = () => {
         <div className="text-end">
           <button onClick={() => navigate("/configure")}>Skip</button>
         </div>
-        <div className="text-center space-y-8 mt-[18rem]">
+        <div className="text-center space-y-8 mt-[10rem]">
           <h2 className="text-3xl semibold">{WELCOMEINFO[steps].title}</h2>
           <p className="text-neutral-400">{WELCOMEINFO[steps].text}</p>
         </div>

@@ -49,10 +49,10 @@ const SettingsPage = () => {
         />
         <p className="text-lg text-nowrap">Passphrase Derived</p>
         <span className="w-full h-2 inline-block border-b-2 border-dashed border-neutral-400" />
-        <button className="text-accent text-nowrap shrink-0 text-lg">
+        {/* <button className="text-accent text-nowrap shrink-0 text-lg">
           {" "}
           + New
-        </button>
+        </button> */}
       </div>
 
       {/* SUB: Content */}

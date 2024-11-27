@@ -32,10 +32,13 @@ const ExtensionContextProvider = ({ children }: { children: ReactNode }) => {
     return seed;
   };
 
+  //    SUB: Encrypt phrase
   const encryptedPhrase = (seed: string, password: string) => {
     const encrypted = MasterSmartWalletClass.encryptSeedPhrase(seed, password);
     return encrypted;
   };
+
+  //    SUB: Decrypt phrase
   const decryptedPhrase = ({
     password,
     salt,
@@ -54,6 +57,7 @@ const ExtensionContextProvider = ({ children }: { children: ReactNode }) => {
     return decrypted;
   };
 
+  //    SUB: Get account
   const accountHandler = (phrase: string) => {
     const acc = new MasterSmartWalletClass(phrase, chain);
     setAccount(acc);

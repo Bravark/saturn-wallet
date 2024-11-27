@@ -6,9 +6,11 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 export default defineConfig({
   plugins: [
     react(),
-    // inject({
-    //   Buffer: ["buffer", "Buffer"],
-    // }),
+    nodePolyfills({
+      globals: {
+        Buffer: true,
+      },
+    }),
   ],
   resolve: {
     alias: {

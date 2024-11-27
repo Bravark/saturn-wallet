@@ -63,12 +63,6 @@ const HomePage = () => {
 
   // "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuQP06g/HshpBcosLVte9klud72Jmv0r8dwwY//qlCgG8XK7/wrSst3fXlkmGVzgT7AuaImE5DrvbUXG75Cz17BKVjIpdexbnak7QMK6ixqA4TR38OKhh0XcZD1VLcPrjo0TdU/uUtd/5CORingj7We3PQxDgUe7jrwcaCD5iNYBOcCE1qs5b6oQ51nO7B5harNvhQ8NmZqqWBQblG58oLQuAjj6IifLSHp+xosuA2iGspibXLVA/GaqXmztDG5lc/KKpaFNQRxldOpBjRzGU/ftmStw9RiPRrTDfbzRCywFhMutm4RsLgUEAE+oD2kE9vcKyNA1/0MldgZ8WQnq64wIDAQAB"
 
-  useEffect(() => {
-    if (!account) {
-      navigate("/welcome");
-    }
-  }, []);
-
   const getBalance = async () => {
     try {
       const bal = await account?.getNativeBalance();
@@ -77,8 +71,6 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    // if (account) {
-    // }
     getBalance();
   }, []);
 
@@ -88,7 +80,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="pb-20 mt-12">
+    <div className="pb-20 mt-8">
       <GlossyCard className=" !px-4 !py-6 border border-accent/45">
         <div className="flex flex-col items-center gap-4">
           {/* SUB: Top */}

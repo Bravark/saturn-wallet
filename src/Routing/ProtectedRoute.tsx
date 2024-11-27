@@ -1,28 +1,11 @@
-import { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useExtension } from "../store/context";
 
 const ProtectedRoute = () => {
-  const [encryptedPhrase, setEncryptedPhrase] = useState<string | null>(null);
+  const { account } = useExtension();
   const location = useLocation();
 
-  useEffect(() => {
-    //@ts-ignore
-    chrome.storage.sync.get("encryptedPhrase", (result) => {
-      //@ts-ignore
-      if (!chrome.runtime.lastError) {
-        console.log(result.encryptedPhrase);
-        setEncryptedPhrase(result.encryptedPhrase || null);
-      }
-    });
-    //@ts-ignore
-  }, []);
-
-  console.log("Initialized", encryptedPhrase);
-
-  if (encryptedPhrase === null)
-    return <Navigate to="/welcome" state={{ from: location }} replace />;
-
-  return encryptedPhrase ? (
+  return account ? (
     <Outlet />
   ) : (
     <Navigate to="/welcome" state={{ from: location }} replace />

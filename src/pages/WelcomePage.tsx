@@ -95,7 +95,7 @@ const WelcomePage = () => {
   return (
     <>
       <div className="mt-6">
-        <div className="mt-[8rem] mb-24 flex flex-col items-center gap-4">
+        <div className="mt-[5rem] mb-16 flex flex-col items-center gap-4">
           <div>
             <img src="/Images/logo.png" alt="logo" className="w-[16rem]" />
           </div>

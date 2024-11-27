@@ -1,7 +1,7 @@
 import { IoCopySharp, IoStar } from "react-icons/io5";
 import BackButton from "../components/UI/BackButton";
 import Button from "../components/UI/Button";
-import { FcGoogle } from "react-icons/fc";
+// import { FcGoogle } from "react-icons/fc";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoIosWarning, IoMdArrowBack, IoMdCheckmark } from "react-icons/io";
@@ -25,22 +25,22 @@ const NewWalletPage = () => {
 
   //   };
 
-  const handleLogin = () => {
-    //@ts-ignore
-    chrome.storage.sync.set({ loggedIn: true }, () => {
-      //@ts-ignore
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const currentTab = tabs[0];
-        if (currentTab) {
-          //@ts-ignore
-          chrome.tabs.update(currentTab.id!, {
-            //@ts-ignore
-            url: chrome.runtime.getURL("index.html"),
-          });
-        }
-      });
-    });
-  };
+  // const handleLogin = () => {
+  //   //@ts-ignore
+  //   chrome.storage.sync.set({ loggedIn: true }, () => {
+  //     //@ts-ignore
+  //     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  //       const currentTab = tabs[0];
+  //       if (currentTab) {
+  //         //@ts-ignore
+  //         chrome.tabs.update(currentTab.id!, {
+  //           //@ts-ignore
+  //           url: chrome.runtime.getURL("index.html"),
+  //         });
+  //       }
+  //     });
+  //   });
+  // };
 
   // HDR: Create a new pass phrase
   const handleCreateNewPhrase = () => {
@@ -100,6 +100,7 @@ const NewWalletPage = () => {
     }
   };
 
+  // HDR: Clear errors
   useEffect(() => {
     const timer = setTimeout(() => {
       setErrors("");
@@ -161,7 +162,7 @@ const NewWalletPage = () => {
           </div>
 
           {/* SUB: ======== *** ========== */}
-          <div className="bg-neutral-800 rounded-md px-6 py-8 mt-4">
+          {/* <div className="bg-neutral-800 rounded-md px-6 py-8 mt-4">
             <h2>Use Google Auth</h2>
             <h4 className="text-sm mb-6 mt-4">Easy and Simple Registration</h4>
             <div className="flex items-center gap-1">
@@ -181,7 +182,7 @@ const NewWalletPage = () => {
               </span>
               <span>Connect with Google</span>
             </Button>
-          </div>
+          </div> */}
         </div>
       )}
       {steps === 1 && (

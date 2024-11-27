@@ -15,8 +15,8 @@ const Layout = () => {
         className="fixed inset-0 object-cover w-full h-full  -z-[100]"
       />
 
-      <div className=" w-[26rem] mx-auto relative ">
-        <div className="px-5">
+      <div className=" w-[26rem] mx-auto relative  h-[42rem] overflow-auto">
+        <div className="px-5 mt-4">
           <HomeLogo />
           <main>
             <Outlet />

@@ -24,7 +24,7 @@ const PassPhraseCard = () => {
       </div>
       <div className="flex items-center gap-4 mt-4">
         <p className="uppercase text-xs">Export private key</p>
-        <p className="uppercase text-xs">Remove</p>
+        {/* <p className="uppercase text-xs">Remove</p> */}
       </div>
     </div>
   );

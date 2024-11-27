@@ -1,14 +1,16 @@
 import Button from "../components/UI/Button";
-import { FcGoogle } from "react-icons/fc";
+// import { FcGoogle } from "react-icons/fc";
 import BackButton from "../components/UI/BackButton";
+import { useNavigate } from "react-router-dom";
 
 const ExistingWalletPage = () => {
+  const navigate = useNavigate();
   return (
     <div>
       <div className="grid grid-cols-6 items-center ">
         <BackButton />
         <h3 className="col-span-5 text-xl capitalize">
-          Welcome back to Dewallet
+          Welcome back to Arcane
         </h3>
       </div>
       <p className="text-center mt-6 mb-4 text-sm">Glad you are back</p>
@@ -17,23 +19,21 @@ const ExistingWalletPage = () => {
       <div className="bg-neutral-800 rounded-md px-6 py-8">
         <h2>Recovery Phrase or private key</h2>
         <h4 className="text-sm mb-8 mt-4">
-          use an exisiting 12/24 word recovery phrase or private key. you can
-          also import wallets from other wallet providers.
+          use an exisiting 12 word recovery phrase or private key. you can also
+          import wallets from other wallet providers.
         </h4>
 
         <Button
           variant="neutral"
           className="w-full text-black bg-neutral-500 mt-4 block capitalize py-4 px-2 text-sm"
+          onClick={() => navigate("/existing-phrase")}
         >
-          use Recovery phrase or private key
-        </Button>
-        <Button className="w-full block  mt-4 mb-6">
-          Create New Recovery Phrase
+          Import Recovery phrase
         </Button>
       </div>
 
       {/* SUB: ======== *** ========== */}
-      <div className="bg-neutral-800 rounded-md px-6 py-8 mt-4">
+      {/* <div className="bg-neutral-800 rounded-md px-6 py-8 mt-4">
         <h2>Use Google Auth</h2>
         <h4 className="text-sm mb-6 mt-4">
           log in with same email address to import existing account to dewallet
@@ -48,7 +48,7 @@ const ExistingWalletPage = () => {
           </span>
           <span>Connect with Google</span>
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };

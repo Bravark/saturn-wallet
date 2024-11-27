@@ -11,6 +11,8 @@ import ExistingWalletPage from "../pages/ExistingWalletPage";
 import DepositPage from "../pages/DepositPage";
 import SuccessPage from "../pages/SuccessPage";
 import WelcomePage from "../pages/WelcomePage";
+import ProtectedRoute from "./ProtectedRoute";
+import ExistingPassphrasesPage from "../pages/ExistingPassphrasesPage";
 
 // import Loader from "@components/Loader.jsx";
 
@@ -22,17 +24,20 @@ const Routing = () => {
         <Route path="configure" element={<ConfigurationPage />} />
         <Route path="wallet-new" element={<NewWalletPage />} />
         <Route path="wallet-existing" element={<ExistingWalletPage />} />
+        <Route path="existing-phrase" element={<ExistingPassphrasesPage />} />
         <Route path="welcome" element={<WelcomePage />} />
       </Route>
 
-      <Route element={<Layout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="withdraw" element={<WithdrawalPage />} />
-        <Route path="success" element={<SuccessPage />} />
-        <Route path="deposit" element={<DepositPage />} />
-        <Route path="settings" element={<SettingsPage />} />
+      <Route element={<ProtectedRoute />}>
+        <Route element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="withdraw" element={<WithdrawalPage />} />
+          <Route path="success" element={<SuccessPage />} />
+          <Route path="deposit" element={<DepositPage />} />
+          <Route path="settings" element={<SettingsPage />} />
 
-        {/* <Route path="*" element={<ErrorPage />} /> */}
+          {/* <Route path="*" element={<ErrorPage />} /> */}
+        </Route>
       </Route>
     </Routes>
   );

@@ -4,7 +4,7 @@ import Button from "../components/UI/Button";
 const ConfigurationPage = () => {
   return (
     <div className="flex flex-col items-center gap-28">
-      <div className="mt-[10rem] flex flex-col items-center gap-4">
+      <div className="mt-[8rem] flex flex-col items-center gap-4">
         <div>
           <img src="/Images/logo.png" alt="logo" className="w-[16rem]" />
         </div>
