@@ -14,6 +14,8 @@ const NewWalletPage = () => {
   const [phrases, setPhrases] = useState("");
   const [showTooltip, setShowTooltip] = useState(false);
   const [steps, setSteps] = useState(0);
+  const [errors, setErrors] = useState("");
+
   const navigate = useNavigate();
 
   const { generateNewSeed, encryptedPhrase } = useExtension();
@@ -70,11 +72,11 @@ const NewWalletPage = () => {
       passwordRef.current?.value === "" ||
       passwordConfirmRef.current?.value === ""
     ) {
-      console.log("Error creating password");
+      setErrors("Error creating password");
       return;
     }
     if (passwordRef.current?.value !== passwordConfirmRef.current?.value) {
-      console.log("Password does not match");
+      setErrors("Password does not match");
       return;
     }
 
@@ -84,13 +86,24 @@ const NewWalletPage = () => {
     );
 
     if (encrypt.encrypted) {
-      localStorage.setItem("encryptedPhrase", JSON.stringify(encrypt));
+      if (process.env.NODE_ENV !== "production") {
+        localStorage.setItem("encryptedPhrase", JSON.stringify(encrypt));
+      } else {
+        //@ts-ignore
+        chrome.storage.sync.set({ accountCreated: JSON.stringify(encrypt) });
+      }
 
-      //@ts-ignore
-      chrome.storage.sync.set({ loggedIn: JSON.stringify(encrypt) });
-      navigate("/");
+      setSteps(3);
     }
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setErrors("");
+    }, 5000);
+
+    () => clearTimeout(timer);
+  }, [errors]);
 
   return (
     <div>
@@ -229,6 +242,12 @@ const NewWalletPage = () => {
           <p className="text-center text-lg mb-4 text-accent">
             Create a new password for your pass phrase
           </p>
+          {errors && (
+            <p className="text-sm text-red-500 text-center italic my-4">
+              {" "}
+              {errors}
+            </p>
+          )}
           <div className="space-y-2">
             <label htmlFor="passphrase" className="text-neutral-400">
               Password{" "}

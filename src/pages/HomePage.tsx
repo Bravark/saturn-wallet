@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/UI/Button";
 import { FaCheck } from "react-icons/fa";
 import { useCallback, useEffect, useState } from "react";
+import { useExtension } from "../store/context";
+import HomeSkeleton from "../components/UI/HomeSkeleton";
+import { formatter } from "../utils";
 
 const ActionButtons = [
   {
@@ -28,7 +31,11 @@ const ActionButtons = [
 const HomePage = () => {
   const [showTooltip, setShowTooltip] = useState(false);
   const navigate = useNavigate();
+  const [balance, setBalance] = useState<undefined | number>();
 
+  const { account } = useExtension();
+
+  // HDR: Action buttons
   const actionButtonHandler = (path: string) => {
     if (path === "refresh") {
       window.location.reload();
@@ -56,19 +63,28 @@ const HomePage = () => {
 
   // "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuQP06g/HshpBcosLVte9klud72Jmv0r8dwwY//qlCgG8XK7/wrSst3fXlkmGVzgT7AuaImE5DrvbUXG75Cz17BKVjIpdexbnak7QMK6ixqA4TR38OKhh0XcZD1VLcPrjo0TdU/uUtd/5CORingj7We3PQxDgUe7jrwcaCD5iNYBOcCE1qs5b6oQ51nO7B5harNvhQ8NmZqqWBQblG58oLQuAjj6IifLSHp+xosuA2iGspibXLVA/GaqXmztDG5lc/KKpaFNQRxldOpBjRzGU/ftmStw9RiPRrTDfbzRCywFhMutm4RsLgUEAE+oD2kE9vcKyNA1/0MldgZ8WQnq64wIDAQAB"
 
-  // useEffect(() => {
-  //   //@ts-ignore
-  //   chrome.storage.sync.get("encryptedPhrase", (result) => {
-  //     console.log("encryptedPhrase", result.encryptedPhrase);
-  //     //@ts-ignore
-  //     if (!result.encryptedPhrase) {
-  //       navigate("/welcome");
-  //     }
-  //   });
-  //   //@ts-ignore
-  // }, []);
+  useEffect(() => {
+    if (!account) {
+      navigate("/welcome");
+    }
+  }, []);
+
+  const getBalance = async () => {
+    try {
+      const bal = await account?.getNativeBalance();
+      setBalance(bal);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getBalance();
+  }, [account]);
 
   // HDR: Main JSX
+  if (balance === undefined) {
+    return <HomeSkeleton />;
+  }
+
   return (
     <div className="pb-20 mt-12">
       <GlossyCard className=" !px-4 !py-6 border border-accent/45">
@@ -82,8 +98,13 @@ const HomePage = () => {
           {/* SUB: Midlle */}
           <div className="flex items-center flex-col gap-2">
             <div className="text-gray-400 flex items-center gap-2">
-              <p>D1EbDs...HtCQ</p>
-              <button onClick={() => copyLink("one-two-three")}>
+              <p className="">
+                {account?.masterAddress.substring(0, 10)}{" "}
+                {account?.masterAddress &&
+                  account?.masterAddress.length > 10 &&
+                  "..."}
+              </p>
+              <button onClick={() => copyLink(account?.masterAddress!)}>
                 {showTooltip ? (
                   <FaCheck className="size-5 text-green-500" />
                 ) : (
@@ -91,10 +112,11 @@ const HomePage = () => {
                 )}
               </button>
             </div>
-            <h3 className="text-4xl">0.000 SOL</h3>
+            <h3 className="text-3xl">
+              {formatter({}).format(balance)} {account?.chain.symbol}
+            </h3>
             <div className="flex items-center font-thin gap-2">
               <p className="text-gray-400">$0.000</p>
-              <p className="text-red-500">(-70%)</p>
             </div>
           </div>
 

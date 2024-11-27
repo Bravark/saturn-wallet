@@ -14,16 +14,17 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 chrome.action.onClicked.addListener((details) => {
-  console.log("Onclick listen", details);
-  chrome.storage.sync.get("loggedIn", ({ loggedIn }) => {
+  chrome.storage.sync.get("accountCreated", ({ loggedIn }) => {
     if (!loggedIn) {
       // Remove the default popup to handle redirection
-      chrome.action.setPopup({ popup: "" });
+      chrome.action.setPopup({ popup: "index.html#/welcome" });
 
       // Open the login page in a new tab
-      chrome.tabs.create({
-        url: chrome.runtime.getURL("index.html#/welcome"),
-      });
+      // chrome.tabs.create({
+      //   url: chrome.runtime.getURL("index.html#/welcome"),
+      // });
+      // Programmatically open the popup
+      chrome.action.openPopup();
     } else {
       // Restore the default popup for logged-in users
       chrome.action.setPopup({ popup: "index.html" });

@@ -64,18 +64,18 @@ export interface Chain {
   isDevnet: boolean;
 }
 
-// const chain: Chain = {
-//   name: "SOON TESTNET",
-//   symbol: "SOON",
-//   chainDecimals: LAMPORTS_PER_SOL.toString(),
-//   explorer: "https://explorer.testnet.soo.network",
-//   http: ["https://rpc.testnet.soo.network/rpc"],
-//   ws: "",
-//   nativeTokenProfitSpreed: "0.04",
-//   chainTokenExplorer: "https://explorer.testnet.soo.network/",
-//   isEvm: false,
-//   isDevnet: true,
-// };
+export const chain: Chain = {
+  name: "SOON TESTNET",
+  symbol: "SOON",
+  chainDecimals: LAMPORTS_PER_SOL.toString(),
+  explorer: "https://explorer.testnet.soo.network",
+  http: ["https://rpc.testnet.soo.network/rpc"],
+  ws: "",
+  nativeTokenProfitSpreed: "0.04",
+  chainTokenExplorer: "https://explorer.testnet.soo.network/",
+  isEvm: false,
+  isDevnet: true,
+};
 class MasterSmartWalletClass {
   // Define the type for the config object
   chain: Chain;
@@ -90,7 +90,6 @@ class MasterSmartWalletClass {
     this.seed = seed.toString();
     this.chain = chain;
     const nn = Math.floor(Math.random() * this.chain.http.length);
-    console.log("this.chain.http: ", this.chain.http[nn]);
     this.connection = new Connection(this.chain.http[nn], "confirmed");
     this.masterKeyPair = this.deriveChildPrivateKey(0);
     this.isDevnet = this.chain.isDevnet;
@@ -228,7 +227,68 @@ class MasterSmartWalletClass {
       return null;
     }
   }
+  getNativeBalance = async () => {
+    const connection = new Connection(
+      this.chain.http[Math.floor(Math.random() * this.chain.http.length)]
+    );
+    try {
+      const publicKey = new PublicKey(this.masterAddress);
+      const bal = await connection.getBalance(publicKey);
+      return bal;
+    } catch (error: any) {
+      console.log("error: ", error);
+      console.log("error message: ", error.message);
+      throw new Error(
+        `the address passed is not a valid solana address : ${this.masterAddress}`
+      );
+    }
+  };
 
+  getTokenBalance = async (token: string) => {
+    try {
+      // Get the balance from the token account
+      const tokenAccount = await this._getTokenAccountAccount(token);
+      console.log("token: ", token);
+      const tokenBalance = await this.connection.getTokenAccountBalance(
+        tokenAccount.address
+      );
+
+      console.log(`User Token Balance: ${tokenBalance.value.uiAmount}`);
+      //convert tokenBalance bigInt to decimal
+
+      const tokenBalanceDecimal = tokenBalance.value.uiAmount;
+      console.log("tokenBalanceDecimal: ", tokenBalanceDecimal);
+      return tokenBalanceDecimal;
+    } catch (error) {
+      console.log("error: ", error);
+      return 0;
+    }
+  };
+
+  _getTokenAccountAccount = async (token: string): Promise<Account> => {
+    try {
+      // Create PublicKey objects for user and token mint
+      const userPublicKeyObj = new PublicKey(this.masterAddress);
+      const tokenMintAddressObj = new PublicKey(token);
+
+      // Get the associated token account address for the user and the token mint
+      const associatedTokenAccount = await getAssociatedTokenAddress(
+        tokenMintAddressObj, // The token mint address
+        userPublicKeyObj // The user's public key
+      );
+
+      // Fetch the token account information
+      const tokenAccount = await getAccount(
+        this.connection,
+        associatedTokenAccount
+      );
+
+      return tokenAccount;
+    } catch (error) {
+      console.error("Error getting token balance:", error);
+      throw error;
+    }
+  };
   async createSendConfirmRetryDeserializedTransaction(
     deserializedBuffer: Buffer,
     senderKeypairs: Keypair[],
@@ -801,70 +861,7 @@ class MasterSmartWalletClass {
   // }
 }
 
-export class SoonClass extends MasterSmartWalletClass {
-  getNativeBalance = async (address: string) => {
-    const connection = new Connection(
-      this.chain.http[Math.floor(Math.random() * this.chain.http.length)]
-    );
-    try {
-      const publicKey = new PublicKey(address);
-      const bal = await connection.getBalance(publicKey);
-      return bal;
-    } catch (error: any) {
-      console.log("error: ", error);
-      console.log("error message: ", error.message);
-      throw new Error(
-        `the address passed is not a valid solana address : ${address}`
-      );
-    }
-  };
-
-  getTokenBalance = async (token: string) => {
-    try {
-      // Get the balance from the token account
-      const tokenAccount = await this._getTokenAccountAccount(token);
-      console.log("token: ", token);
-      const tokenBalance = await this.connection.getTokenAccountBalance(
-        tokenAccount.address
-      );
-
-      console.log(`User Token Balance: ${tokenBalance.value.uiAmount}`);
-      //convert tokenBalance bigInt to decimal
-
-      const tokenBalanceDecimal = tokenBalance.value.uiAmount;
-      console.log("tokenBalanceDecimal: ", tokenBalanceDecimal);
-      return tokenBalanceDecimal;
-    } catch (error) {
-      console.log("error: ", error);
-      return 0;
-    }
-  };
-
-  _getTokenAccountAccount = async (token: string): Promise<Account> => {
-    try {
-      // Create PublicKey objects for user and token mint
-      const userPublicKeyObj = new PublicKey(this.masterAddress);
-      const tokenMintAddressObj = new PublicKey(token);
-
-      // Get the associated token account address for the user and the token mint
-      const associatedTokenAccount = await getAssociatedTokenAddress(
-        tokenMintAddressObj, // The token mint address
-        userPublicKeyObj // The user's public key
-      );
-
-      // Fetch the token account information
-      const tokenAccount = await getAccount(
-        this.connection,
-        associatedTokenAccount
-      );
-
-      return tokenAccount;
-    } catch (error) {
-      console.error("Error getting token balance:", error);
-      throw error;
-    }
-  };
-}
+export class SoonClass extends MasterSmartWalletClass {}
 
 // const test = async () => {
 //   const masterClass = new SoonClass();

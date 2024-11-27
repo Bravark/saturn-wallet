@@ -1,5 +1,5 @@
-import { createContext, ReactNode, useContext } from "react";
-import MasterSmartWalletClass from "../provider";
+import { createContext, ReactNode, useContext, useState } from "react";
+import MasterSmartWalletClass, { chain } from "../provider";
 
 type ExtensionContextType = {
   generateNewSeed: () => string;
@@ -7,12 +7,25 @@ type ExtensionContextType = {
     seed: string,
     password: string
   ) => { [key: string]: string };
+  decryptedPhrase: ({
+    salt,
+    password,
+    encrypted,
+  }: {
+    salt: string;
+    password: string;
+    encrypted: string;
+  }) => string | null;
+  accountHandler: (phrase: string) => void;
+  account: MasterSmartWalletClass | null;
 };
 
 const ExtensionContext = createContext<ExtensionContextType | null>(null);
 
 // HDR: Extension Provider
 const ExtensionContextProvider = ({ children }: { children: ReactNode }) => {
+  const [account, setAccount] = useState<null | MasterSmartWalletClass>(null);
+
   //    SUB: Generate new seed
   const generateNewSeed = () => {
     const seed = MasterSmartWalletClass.GenerateNewSeed();
@@ -21,13 +34,38 @@ const ExtensionContextProvider = ({ children }: { children: ReactNode }) => {
 
   const encryptedPhrase = (seed: string, password: string) => {
     const encrypted = MasterSmartWalletClass.encryptSeedPhrase(seed, password);
-
-    console.log(encrypted);
-
     return encrypted;
   };
+  const decryptedPhrase = ({
+    password,
+    salt,
+    encrypted,
+  }: {
+    salt: string;
+    password: string;
+    encrypted: string;
+  }) => {
+    const decrypted = MasterSmartWalletClass.decryptSeedPhrase(
+      encrypted,
+      password,
+      salt
+    );
 
-  const values = { generateNewSeed, encryptedPhrase };
+    return decrypted;
+  };
+
+  const accountHandler = (phrase: string) => {
+    const acc = new MasterSmartWalletClass(phrase, chain);
+    setAccount(acc);
+  };
+
+  const values = {
+    generateNewSeed,
+    encryptedPhrase,
+    decryptedPhrase,
+    account,
+    accountHandler,
+  };
   // HDR: return Provider
   return (
     <ExtensionContext.Provider value={values}>
