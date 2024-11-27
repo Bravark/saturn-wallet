@@ -1,7 +1,3 @@
-//@ts-nocheck
-
-import provider from "./provider.js";
-
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {
     chrome.tabs.create({
@@ -98,12 +94,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.type === "login") {
     console.log("Fetching data");
     loginWithGoogle();
-  }
-  if (message.type === "generateNewSeed") {
-    const seed = provider.GenerateNewSeed();
-    const response = { success: true, data: seed };
-    console.log("response feom background", response);
-    sendResponse(response);
   }
 
   return true; // Keep the message channel open for async responses

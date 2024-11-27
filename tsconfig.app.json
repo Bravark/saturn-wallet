@@ -1,15 +1,11 @@
 {
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    // "target": "ES2020",
+    "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    // "module": "ESNext",
+    "module": "ESNext",
     "skipLibCheck": true,
-
-    "outDir": "./dist",
-    "module": "ES6",
-    "target": "ES6",
 
     /* Bundler mode */
     "moduleResolution": "Bundler",
@@ -27,6 +23,5 @@
     "noUncheckedSideEffectImports": true
   },
 
-  "include": ["src", "public/**/*.ts", "public/background.js"],
-  "exclude": ["node_modules"]
+  "include": ["src", "public/**/*.ts"]
 }

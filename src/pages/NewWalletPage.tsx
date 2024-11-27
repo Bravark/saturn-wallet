@@ -2,20 +2,19 @@ import { IoCopySharp, IoStar } from "react-icons/io5";
 import BackButton from "../components/UI/BackButton";
 import Button from "../components/UI/Button";
 import { FcGoogle } from "react-icons/fc";
-// import { MasterSmartWalletClass } from "../../public/provider";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoIosWarning, IoMdArrowBack } from "react-icons/io";
-// import MasterSmartWalletClass from "../provider";
+import { useExtension } from "../store/context";
 
 const NewWalletPage = () => {
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const passwordConfirmRef = useRef<HTMLInputElement | null>(null);
-
-  //@ts-ignore
   const [phrases, setPhrases] = useState("");
   const [showTooltip, setShowTooltip] = useState(false);
   const [steps, setSteps] = useState(0);
+
+  const { generateNewSeed } = useExtension();
 
   //  const handleLogin = () => {
   //     chrome.runtime.sendMessage({ type: "login" });
@@ -39,26 +38,10 @@ const NewWalletPage = () => {
     });
   };
 
-  // const handleLogin = () => {
-  //   const seed = MasterSmartWalletClass.GenerateNewSeed();
-  //   console.log("seed: ", seed);
-  // };
   // HDR: Create a new pass phrase
   const handleCreateNewPhrase = () => {
-    console.log("running handle create");
-    //@ts-ignore
-    chrome.runtime.sendMessage({ type: "generateNewSeed" }, (response) => {
-      console.log("response", response);
-      //@ts-ignore
-      if (chrome.runtime.lastError) {
-        //@ts-ignore
-        console.log("Error", chrome.runtime.lastError.message);
-      }
-      if (response.success) {
-        setPhrases(response.data);
-        console.log(response.data);
-      }
-    });
+    const seed = generateNewSeed();
+    setPhrases(seed);
     setSteps(1);
   };
 

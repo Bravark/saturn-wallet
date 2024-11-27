@@ -1,10 +1,13 @@
 import { HashRouter as Router } from "react-router-dom";
 import Routing from "./Routing/Routing";
+import ExtensionContextProvider from "./store/context";
 
 function App() {
   return (
     <Router>
-      <Routing />
+      <ExtensionContextProvider>
+        <Routing />
+      </ExtensionContextProvider>
     </Router>
   );
 }

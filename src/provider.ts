@@ -4,7 +4,6 @@ import * as bip39 from "@scure/bip39";
 import CryptoJS from "crypto-js";
 import { wordlist } from "@scure/bip39/wordlists/english";
 
-import fs from "fs";
 import {
   Keypair,
   LAMPORTS_PER_SOL,
@@ -692,12 +691,7 @@ class MasterSmartWalletClass {
   }
 
   //INTERNAL
-  solLoadAddresses(): IAddress[] {
-    const addresses: IAddress[] = JSON.parse(
-      fs.readFileSync(`Addresses-${this.addressFromSeed(0)}.json`, "utf8")
-    );
-    return addresses;
-  }
+
   solGetMasterAddress(): string {
     return this.addressFromSeed(0);
   }
@@ -708,14 +702,6 @@ class MasterSmartWalletClass {
     });
 
     return privateKeys;
-  }
-  solCreateAddressAndAddToFIle(start: number, end: number) {
-    const result = this.addressFromSeedMultiple(start, end);
-    console.log("getMultiplePublicKeyFromSeed", result);
-    fs.writeFileSync(
-      `Addresses-${this.addressFromSeed(0)}.json`,
-      JSON.stringify(result)
-    );
   }
 
   //HELPERS
